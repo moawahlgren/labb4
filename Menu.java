@@ -1,49 +1,45 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package labb4;
+package view;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+
 
 /**
+ * 
  *
- * @author moawahlgren
+ * @author sarar
  */
 public class Menu extends Application {
-    
     @Override
-    public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+    public void start(Stage primaryStage){
+        BorderPane pane = new BorderPane();
+        pane.setLeft(getVBox());
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        
-        Scene scene = new Scene(root, 300, 250);
-        
-        primaryStage.setTitle("Hello World!");
+        Scene scene = new Scene(pane, 700, 600);
+        primaryStage.setTitle("Testing testing");
         primaryStage.setScene(scene);
         primaryStage.show();
+        
+       
     }
-
-    /**
-     * @param args the command line arguments
-     */
+    
+    private VBox getVBox(){
+        VBox vBox = new VBox(15);
+        vBox.setPadding(new Insets(30, 10, 10, 10));
+        Button btAddPic = new Button("Add Image");
+        Button btInvertColor = new Button("Invert Color");
+        Button btBlurPic = new Button("Blur");
+        Button btContrast = new Button("Contrast");
+        Button btHistogram = new Button("View Histogram");
+        Button btSavePic = new Button("Save Image");
+        vBox.getChildren().addAll(btAddPic, btInvertColor, btBlurPic, btContrast, btHistogram, btSavePic);
+        return vBox;
+    }
     public static void main(String[] args) {
         launch(args);
     }
