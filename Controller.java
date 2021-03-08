@@ -11,4 +11,30 @@ package Controller;
  */
 public class Controller {
     
+    
+    public static void handleAddPic() {
+        
+    }
+    
+    public static void handleContrast() {
+        
+    }
+    
+    public static void handleBlurPic() {
+        
+    }
+    
+    public static void handleInvertColor() {
+        
+    }
+    
+    public static void handleHistogram() {
+        
+    }
+    
+    public static void handleSavePic() {
+        
+    }
+    
+     
 }
