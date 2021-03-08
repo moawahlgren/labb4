@@ -11,4 +11,11 @@ package Model;
  */
 public class Model {
     
+    InvertColor invertColor = new InvertColor(); 
+    
+    public int[][] invertColor(int[][] matrix) {
+        return invertColor.processImage(matrix);
+    }
+    
+    
 }
