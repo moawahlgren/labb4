@@ -7,7 +7,7 @@ package Model;
 
 /**
  *
- * @author moawahlgren
+ * @author SaraRoempke & MoaWahlgren
  */
 public class InvertColor implements ManipulatePic {
     
@@ -18,15 +18,25 @@ public class InvertColor implements ManipulatePic {
         //att nya pixeln på denna plats ska ha färgvärdet
         // 255 - gamla färgvärdet 
         //Sedan returnera ny pixelmatris 
-        
-        int[][] newMatrix = null; 
+ 
+        int[][] newMatrix = new int[pixelMatrix.length][pixelMatrix[0].length];
         
         for (int i=0; i<pixelMatrix.length; i++) {
             for (int j=0; j<pixelMatrix[0].length; j++) {
-                newMatrix[i][j] = 255 - pixelMatrix[i][j]; 
+                int aValue = ((pixelMatrix[i][j] >> 24) & 0xff); 
+                int rValue = ((pixelMatrix[i][j] >> 16) & 0xff); 
+                int gValue = ((pixelMatrix[i][j] >> 8) & 0xff); 
+                int bValue = (pixelMatrix[i][j] & 0xff); 
+                
+                int red = 255 - rValue; 
+                int green = 255 - gValue; 
+                int blue = 255 - bValue; 
+                
+                int color = (aValue << 24) | (red << 16) | (green << 8) | blue; 
+                
+                newMatrix[i][j] = color;  
             }
         }
-        
         return newMatrix; 
     }
     
