@@ -31,7 +31,7 @@ public class Model {
     
     public int[][] editContrast(int[][] matrix, int level, int window) {
         editcontrast = new EditContrast(matrix, level, window); 
-        return null; 
+        return editcontrast.processImage(matrix); 
     }
     
     
