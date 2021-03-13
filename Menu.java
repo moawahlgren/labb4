@@ -102,7 +102,8 @@ public class Menu extends Application /*implements EventHandler<ActionEvent>*/ {
         EventHandler<ActionEvent> eventBlurPic = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                controller.handleBlurPic(image);
+                Image newImage = controller.handleBlurPic(image); 
+                myImageView.setImage(newImage);
             }
         };
         
