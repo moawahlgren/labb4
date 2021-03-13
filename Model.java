@@ -11,13 +11,12 @@ package Model;
  */
 public class Model {
     private final InvertColor invertcolor; 
-    //private final EditContrast editcontrast; 
+    private EditContrast editcontrast; 
     private final Blur blur; 
     //private final Histogram histogram; 
     
     public Model() {
         invertcolor = new InvertColor(); 
-        //editcontrast = new EditContrast(int[][] matrix, int level, int window); 
         blur = new Blur(); 
         //histogram = new Histogram(); 
     }
@@ -31,8 +30,10 @@ public class Model {
     }
     
     public int[][] editContrast(int[][] matrix, int level, int window) {
+        editcontrast = new EditContrast(matrix, level, window); 
         return null; 
     }
     
     
 }
+
