@@ -1,152 +1,219 @@
 package View;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.control.Alert;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javax.imageio.ImageIO;
-import Controller.*; 
-import Model.*; 
+import Model.Model;
+import Controller.Controller;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 
+public class MyView extends BorderPane {
 
-/**
- * 
- *
- * @author sarar
- */
-public class Menu extends Application /*implements EventHandler<ActionEvent>*/ {
+    private final Model model;
+    private final BorderPane pane;
+    public ImageView myImageView;
+    public boolean showSlider = false; 
+    public static int windowValue;
+    public static int levelValue;
+    //private final Controller controller;
+
+    
     private final Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    ImageView myImageView;
-    private Model model; 
-    
-    @Override
-    public void start(Stage primaryStage) throws IOException{
+
+    public MyView(Model model) {
+        this.model = model;
         
-        Controller controller = new Controller(model, this); 
-        
-        VBox vBox = new VBox(15);
-        vBox.setPadding(new Insets(30, 10, 10, 10));
-        Button btAddPic = new Button("Add Image");
-        Button btInvertColor = new Button("Invert Color");
-        Button btBlurPic = new Button("Blur");
-        Button btContrast = new Button("Contrast");
-        Button btHistogram = new Button("View Histogram");
-        Button btSavePic = new Button("Save Image");
-        vBox.getChildren().addAll(btAddPic, btInvertColor, btBlurPic, btContrast, btHistogram, btSavePic);
-        
-        FileChooser filechoice = new FileChooser();
+        Controller controller = new Controller(model, this);
+        pane = new BorderPane();
         myImageView = new ImageView();
+        MenuBar menuBar = createMenu(controller);
+	
+        this.setTop(menuBar);
+        this.setRight(myImageView);
         
-        
-        // Här ska det in 
-        
-        
-        
-        
-        
-        FileChooser fileChoice = new FileChooser();
-
-        //FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
-        //FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
-        //fileChoice.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
-        File file = fileChoice.showOpenDialog(null);
-
-        // kanske lägga til en if file == null
-        if (ImageIO.read(file) == null) {
-            // Throw EXCEPTION 
+        if(showSlider == true) {
+            VBox sliders = contrastView();
+            this.setLeft(sliders);  
         }
-        
-        BufferedImage bufferedImage = ImageIO.read(file);
-        Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-        myImageView.setImage(image);
-        
-        BorderPane pane = new BorderPane();
-        pane.setLeft(vBox);
-        pane.setRight(myImageView);
-
-        Scene scene = new Scene(pane, 700, 600);
-        primaryStage.setTitle("Testing testing");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        
-        EventHandler<ActionEvent> eventAddPic = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                controller.handleAddPic();       
-            }
-        };
-        
-        EventHandler<ActionEvent> eventInvertColor = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                System.out.println("Hej"); 
-                Image newImage = controller.handleInvertColor(image); 
-                myImageView.setImage(newImage);
-            }
-        };      
-        EventHandler<ActionEvent> eventBlurPic = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                Image newImage = controller.handleBlurPic(image); 
-                myImageView.setImage(newImage);
-            }
-        };
-        
-        EventHandler<ActionEvent> eventContrast = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                controller.handleContrast(image); 
-            }
-        };
-        
-        EventHandler<ActionEvent> eventHistogram = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                controller.handleHistogram(image); 
-            }
-        };
-        
-        EventHandler<ActionEvent> eventSavePic = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                controller.handleSavePic(image); 
-            }
-        };
-        
-        btAddPic.setOnAction(eventAddPic); 
-        btInvertColor.setOnAction(eventInvertColor); 
-        btBlurPic.setOnAction(eventBlurPic); 
-        btContrast.setOnAction(eventContrast); 
-        btHistogram.setOnAction(eventHistogram); 
-        btSavePic.setOnAction(eventSavePic); 
-       
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    void showAlert(String message) {
-        alert.setHeaderText("");
-        alert.setTitle("Alert!");
-        alert.setContentText(message);
-        alert.show();
+                
+    }    
+    
+    private MenuBar createMenu(Controller controller) {
+		MenuItem exitItem = theExit();
+                MenuItem savePic = theSave(controller);
+                MenuItem openPic = toOpenImage(controller);
+		
+		Menu fileMenu = new Menu("File");
+		fileMenu.getItems().addAll(exitItem, savePic, openPic);
+                
+                MenuItem blurPic = blurImage(controller);
+                MenuItem invertColor = toInvertColor(controller);
+                MenuItem histogram = toOpenHistogram(controller);
+                MenuItem editContrast = toEditContrast(controller); 
+                Menu processMenu = new Menu("Process");
+                processMenu.getItems().addAll(histogram, blurPic, invertColor, editContrast);
+                
+                if(myImageView == null){
+                    processMenu.hide();
+                }
+                else 
+                    processMenu.show();
+		
+		MenuBar menuBar = new MenuBar();
+		menuBar.getMenus().addAll(fileMenu, processMenu);
+		
+		return menuBar;
     }
     
+    public VBox contrastView(){
+        VBox sliders = new VBox(10); 
+        Label windowlb = new Label("Window:");
+        Label levellb = new Label("Level:");
+        Slider Window = new Slider(0, 255, 0);
+        Window.setShowTickLabels(true);
+        Window.setShowTickMarks(true);
+        Slider Level = new Slider(0, 255, 0);
+        Level.setShowTickLabels(true);
+        Level.setShowTickMarks(true);
+        //Button btEdit = new Button("Edit");
+        Button btDone = new Button("Apply");
+
+        Window.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                windowValue = (int) newValue;
+            }
+        });
+
+        Level.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                levelValue = (int) newValue;
+            }
+        });
+
+        btDone.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                showSlider = false;
+            }
+        });
+            
+        sliders.getChildren().addAll(windowlb, Window, levellb, Level, btDone);
+
+        return sliders;
+
+    }
+        
     
+    
+    // ska fråga om du inte vill spara bild först
+    public MenuItem theExit(){
+        MenuItem exitItem = new MenuItem("Exit");
+        exitItem.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.exit();
+			}
+		});
+        
+        return exitItem;
+    }
+    
+    public MenuItem theSave(Controller controller){
+        MenuItem savePic = new MenuItem("Save Image");
+        savePic.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Save the image");
+                try {
+                    controller.handleSavePic(myImageView.getImage());
+                } catch (IOException ex) {
+                    Logger.getLogger(MyView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        return savePic;
+    }
+    
+    public MenuItem toOpenImage(Controller controller){
+        MenuItem openPic = new MenuItem("Open Image");
+        openPic.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Open Image");
+                Image newImage = controller.handleAddPic();
+                myImageView.setImage(newImage); 
+            }
+        });
+        return openPic;
+    }
+    
+    public MenuItem toInvertColor(Controller controller){
+        MenuItem invertColor = new MenuItem("Invert Color");
+        invertColor.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Invert Color");
+                Image newImage = controller.handleInvertColor(myImageView.getImage()); 
+                myImageView.setImage(newImage);
+            }
+        });
+        return invertColor;
+    }
+    
+    public MenuItem blurImage(Controller controller){
+        MenuItem blurPic = new MenuItem("Blur");
+        blurPic.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Da blurr");
+                Image newImage = controller.handleBlurPic(myImageView.getImage()); 
+                myImageView.setImage(newImage);
+            }
+        });
+        return blurPic;
+    }
+    
+    public MenuItem toOpenHistogram(Controller controller){
+        MenuItem histogram = new MenuItem("Show Histogram");
+        histogram.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Show Histogram");
+            }
+        });
+        return histogram;
+    }
+    
+    public MenuItem toEditContrast(Controller controller) {
+        MenuItem editContrast = new MenuItem("Edit Contrast"); 
+        editContrast.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Editcontrassst");
+                showSlider = true;
+                Image newImage = controller.handleContrast(myImageView.getImage(), levelValue, windowValue); 
+                myImageView.setImage(newImage);
+            }
+        });
+        return editContrast;
+    }
+
 }
