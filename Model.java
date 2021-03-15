@@ -7,18 +7,19 @@ package Model;
 
 /**
  *
- * @author moawahlgren
+ * @author SaraRoempke & MoaWahlgren
  */
+
 public class Model {
     private final InvertColor invertcolor; 
     private EditContrast editcontrast; 
     private final Blur blur; 
-    //private final Histogram histogram; 
+    private final Histogram histogram; 
     
     public Model() {
         invertcolor = new InvertColor(); 
         blur = new Blur(); 
-        //histogram = new Histogram(); 
+        histogram = new Histogram(); 
     }
     
     public int[][] invertColor(int[][] matrix) {
@@ -30,10 +31,12 @@ public class Model {
     }
     
     public int[][] editContrast(int[][] matrix, int level, int window) {
-        editcontrast = new EditContrast(matrix, level, window); 
+        editcontrast = new EditContrast(level, window); 
         return editcontrast.processImage(matrix); 
     }
     
-    
-}
+    public int[][] histogram(int[][] matrix) {
+        return histogram.processImage(matrix);
+    }
 
+}

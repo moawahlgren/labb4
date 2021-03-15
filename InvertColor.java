@@ -9,6 +9,7 @@ package Model;
  *
  * @author SaraRoempke & MoaWahlgren
  */
+
 public class InvertColor implements ManipulatePic {
     
     @Override 

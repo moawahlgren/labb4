@@ -7,8 +7,9 @@ package Model;
 
 /**
  *
- * @author moawahlgren
+ * @author SaraRoempke & MoaWahlgren
  */
+
 public class EditContrast implements ManipulatePic {
     
     int level, window;
@@ -16,7 +17,7 @@ public class EditContrast implements ManipulatePic {
     int[] lut = theLUT(level, window); 
  
     
-    public EditContrast(int[][] pixelMatrix, int level, int window) {
+    public EditContrast(int level, int window) {
         this.level = level; 
         this.window = window; 
     }
@@ -27,15 +28,17 @@ public class EditContrast implements ManipulatePic {
        
         for (int i=0; i<pixelMatrix.length; i++) {
             for (int j=0; j<pixelMatrix[0].length; j++) {
-                int aValue = ((pixelMatrix[i][j] >> 24) & 0xff); 
-                int rValue = ((pixelMatrix[i][j] >> 16) & 0xff); 
-                int gValue = ((pixelMatrix[i][j] >> 8) & 0xff); 
-                int bValue = (pixelMatrix[i][j] & 0xff); 
+                int a = ((pixelMatrix[i][j] >> 24) & 0xff); 
+                int r = ((pixelMatrix[i][j] >> 16) & 0xff); 
+                int g = ((pixelMatrix[i][j] >> 8) & 0xff); 
+                int b = (pixelMatrix[i][j] & 0xff);
                 
-                int intensity = (rValue + gValue + bValue) / 3; 
-                intensity = intensity * lut[intensity];
+                double greyValue = (r * 0.2126 + g * 0.7125 + b * 0.0722) / 3; 
+                int intensity = (int) greyValue;
+                greyValue = greyValue * lut[intensity];
+                int color = (int) greyValue;
                 
-                newMatrix[i][j] = (aValue << 24) | (intensity << 16) | (intensity << 8) | intensity;
+                newMatrix[i][j] = (a << 24) | (color << 16) | (color << 8) | color;
             }
         }
         return newMatrix; 
@@ -53,8 +56,6 @@ public class EditContrast implements ManipulatePic {
         for (int i=b+1; i<MP; i++) {
             array[i] = MP; 
         }
-        
         return array;
     }
 }
-

@@ -7,8 +7,10 @@ package Model;
 
 /**
  *
- * @author moawahlgren
+ * @author SaraRoempke & MoaWahlgren
  */
 public interface ManipulatePic {
+    
+    public abstract int[][] processImage(int[][] pixelMatrix); 
     
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 
 /**
  *
- * @author moawahlgren
+ * @author SaraRoempke & MoaWahlgren
  */
 public class Controller {
 
@@ -34,9 +34,9 @@ public class Controller {
       
         int[][] pixelMatrix = TransformImage.imageToPixels(image); 
         
-        model.editContrast(pixelMatrix, level, window); 
+        int[][] matrix = model.editContrast(pixelMatrix, level, window); 
         
-        return TransformImage.pixelsToImage(pixelMatrix);
+        return TransformImage.pixelsToImage(matrix);
     }
     
     public Image handleBlurPic(Image image) {
@@ -59,10 +59,11 @@ public class Controller {
     }
    
     
-    public void handleHistogram(Image image) {
-        //int[][] pixelMatris = TransformImage.imageToPixels(image); 
+    public int[][] handleHistogram(Image image) {
         
+        int[][] pixelMatrix = TransformImage.imageToPixels(image); 
         
+        return model.histogram(pixelMatrix); 
     }
     
     public void handleSavePic(Image image) throws IOException {

@@ -19,8 +19,9 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author moawahlgren
+ * @author SaraRoempke & MoaWahlgren
  */
+
 public class fileImage {
     
     

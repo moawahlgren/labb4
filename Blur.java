@@ -15,7 +15,7 @@ public class Blur implements ManipulatePic {
     public int[][] processImage(int[][] pixelMatrix) {
 
         int blurry = 0;
-        while(blurry < 20 ) {
+        while(blurry < 10 ) {
             for (int i=0; i<pixelMatrix.length-1; i++) {
                 for (int j=0; j<pixelMatrix[0].length-1; j++) {
 
@@ -92,3 +92,4 @@ public class Blur implements ManipulatePic {
     }
         
 }
+
